@@ -10,6 +10,30 @@ export default function DetalleClaseScreen({ route, navigation }) {
   const insets = useSafeAreaInsets();
   const { clase } = route.params;
   const { isTable } = useResponsive();
+  const [cupos, setCupos] = useState(clase.cupos);
+  const [reservado, setReservado] = useState(clase.reservado ?? false);
+
+  const realizarReserva = () => {
+    if (reservado) {
+      Alert.alert("Ya tienes una reserva en esta clase");
+    } 
+    
+    else if (cupos > 0) {
+      const cuposRestantes = cupos - 1;
+      clase.cupos = cuposRestantes;
+      clase.reservado = true;
+      setCupos(cuposRestantes);
+      setReservado(true);
+
+      Alert.alert("Has reservado en esta clase!");
+    }
+    
+    else {
+      Alert.alert("Lo sentimos, no hay cupos disponibles");
+    }
+    
+  };
+
   useLayoutEffect(() => {
   navigation.setOptions({ title: clase.titulo });
   }, [navigation, clase.titulo]);
@@ -53,7 +77,7 @@ export default function DetalleClaseScreen({ route, navigation }) {
 
             <View style={styles.dato}>
               <Text style={styles.datoEtiqueta}>Cupos disponibles</Text>
-              <Text style={styles.datoValor}>{clase.cupos}</Text>
+              <Text style={styles.datoValor}>{cupos}</Text>
             </View>
 
             <View style={styles.dato}>
@@ -66,7 +90,7 @@ export default function DetalleClaseScreen({ route, navigation }) {
 
           <Pressable
             accessibilityRole="button"
-            onPress={() => {}}
+            onPress={realizarReserva}
             style={({ pressed }) => [
               styles.botonReserva,
               pressed && styles.botonPresionado,
