@@ -41,7 +41,7 @@ export default function Card({clase, onReservar}) {
 
 const styles = StyleSheet.create({
   tarjeta: {
-    width: 320,
+    width: '100%',
     minHeight: 230,
     flexDirection: 'row',
     alignItems: 'center',

@@ -56,7 +56,7 @@ export default function ClassesScreen({ navigation }) {
           )}
         </View>
 
-        <ScrollView horizontal style={{ flexGrow: 0 }}>
+        <ScrollView horizontal style={style.filtros}>
           {NIVELES.map((item) => (
             <NivelFiltro
               key={item}
@@ -71,18 +71,21 @@ export default function ClassesScreen({ navigation }) {
       <FlatList
         data={resultados}
         keyExtractor={(item) => item.id}
-        renderItem={({ item }) => ( 
-          <Card 
-            clase={item}
-            onReservar={(claseSeleccionada) =>
-              navigation.navigate('DetalleClase', {clase: claseSeleccionada})
-            }
-          />
+        renderItem={({ item }) => (
+          <View style={[style.contenedorTarjeta, columnas > 1 && style.contenedorDosColumnas]}>
+            <Card
+              clase={item}
+              onReservar={(claseSeleccionada) =>
+                navigation.navigate('DetalleClase', {clase: claseSeleccionada})
+              }
+            />
+          </View>
         )}
         numColumns={columnas}
         showsVerticalScrollIndicator = {false}
         contentContainerStyle={{ paddingHorizontal,
           flexGrow:1,
+          paddingTop: spacing.lg,
           paddingBottom: spacing.xl
 
          }}
@@ -118,5 +121,8 @@ const style = StyleSheet.create({
     borderWidth: 1,
     borderColor: colors.borde,
   },
+  filtros: { flexGrow: 0, marginTop: spacing.md },
+  contenedorTarjeta: { width: '100%', marginBottom: spacing.md },
+  contenedorDosColumnas: { width: '50%', paddingHorizontal: spacing.sm },
   input: { flex: 1, fontSize: 14, color: colors.texto, paddingVertical: 0 },
 })
