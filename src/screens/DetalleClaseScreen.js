@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useLayoutEffect } from "react";
-import { View, Text, ScrollView, StyleSheet, Alert, Image } from "react-native";
+import { View, Text, ScrollView, StyleSheet, Alert, Image, Pressable } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import useResponsive from "../hooks/useResponsive";
@@ -25,6 +25,56 @@ export default function DetalleClaseScreen({ route, navigation }) {
           style={[styles.portada, { height: isTable ? 300 : 200 }]}
           resizeMode="cover"
         />
+
+        <View style={styles.contenido}>
+          <View style={styles.profesor}>
+            <Image
+              source={{ uri: clase.profesor.foto }}
+              accessibilityLabel={`Foto de ${clase.profesor.nombre}`}
+              style={styles.avatar}
+            />
+            <Text style={styles.profesorNombre}>{clase.profesor.nombre}</Text>
+          </View>
+
+          <Text style={styles.descripcion}>{clase.descripcion}</Text>
+
+          <View style={styles.datos}>
+            <View style={styles.dato}>
+              <Text style={styles.datoEtiqueta}>Precio</Text>
+              <Text style={[styles.datoValor, styles.precio]}>
+                {formatearPrecio(clase.precio)}
+              </Text>
+            </View>
+
+            <View style={styles.dato}>
+              <Text style={styles.datoEtiqueta}>Duración</Text>
+              <Text style={styles.datoValor}>{clase.duracion} minutos</Text>
+            </View>
+
+            <View style={styles.dato}>
+              <Text style={styles.datoEtiqueta}>Cupos disponibles</Text>
+              <Text style={styles.datoValor}>{clase.cupos}</Text>
+            </View>
+
+            <View style={styles.dato}>
+              <Text style={styles.datoEtiqueta}>Horario</Text>
+              <Text style={styles.datoValor}>
+                {clase.horarios?.join('\n') ?? 'Por confirmar'}
+              </Text>
+            </View>
+          </View>
+
+          <Pressable
+            accessibilityRole="button"
+            onPress={() => {}}
+            style={({ pressed }) => [
+              styles.botonReserva,
+              pressed && styles.botonPresionado,
+            ]}
+          >
+            <Text style={styles.textoBoton}>Realizar reserva</Text>
+          </Pressable>
+        </View>
       </ScrollView>
     </View>
   );
@@ -33,15 +83,34 @@ export default function DetalleClaseScreen({ route, navigation }) {
 const styles = StyleSheet.create({
   pantalla: { flex: 1, backgroundColor: colors.fondo },
   portada: { width: '100%', backgroundColor: colors.borde },
+  contenido: { padding: spacing.lg, gap: spacing.md },
   datos: {
     flexDirection: 'row',
-    justifyContent: 'space-around',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+    gap: spacing.sm,
     backgroundColor: colors.superficie,
     borderRadius: radius.lg,
-    paddingVertical: spacing.lg,
+    padding: spacing.md,
   },
-  dato: { alignItems: 'center', gap: 2 },
+  dato: {
+    width: '48%',
+    gap: spacing.xs,
+    padding: spacing.md,
+    backgroundColor: colors.fondo,
+    borderRadius: radius.md,
+  },
+  datoEtiqueta: { fontSize: 12, color: colors.textoSecundario },
   datoValor: { fontSize: 16, fontWeight: '800', color: colors.texto },
+  botonReserva: {
+    alignItems: 'center',
+    paddingHorizontal: spacing.lg,
+    paddingVertical: spacing.md,
+    backgroundColor: colors.primario,
+    borderRadius: radius.md,
+  },
+  botonPresionado: { opacity: 0.75 },
+  textoBoton: { color: colors.superficie, fontSize: 16, fontWeight: '700' },
   profesor: {
     flexDirection: 'row',
     alignItems: 'center',
