@@ -1,0 +1,34 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useCallback, useEffect, useState } from "react";
+
+export default function useAlmacenamiento(clave, valorInicial) {
+  const [valor, setValor] = useState(valorInicial);
+  const [listo, setListo] = useState(false);
+
+  useEffect(() => {
+    let activo = true; //Bandera para saber si se esta guardando el componente o montando el componentne
+
+    AsyncStorage.getItem(clave)
+      .then((guardando) => {
+        if (activo && guardando !== null) setValor(JSON.parse(guardando));
+      })
+      .catch((error) => console.log("Error leyendo" + clave, error))
+      .finally(() => activo && setListo(true));
+
+    return () => {
+      activo = false;
+    };
+  }, [clave]);
+
+  const actualizar = useCallback(
+    async (nuevoValor) => {
+      setValor(nuevoValor);
+      try {
+        await AsyncStorage.setItem(clave, JSON.stringify(nuevoValor));
+      } catch (error) {
+        console.log("Error guardando" + clave, error);
+      }
+    },
+    [clave],
+  );
+}
